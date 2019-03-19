@@ -20,14 +20,14 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module decoder_top #(parameter SIZE=3)(CLK,A,Y);
+module decoder_top #(parameter SIZE=4)(CLK,A,Y);
 localparam SIZE_out=2**SIZE;
 localparam SIZE_wire=(2**SIZE)-4;
 input wire CLK;
 input wire [SIZE-1:0] A;
 output reg [SIZE_out-1:0] Y;
 
-wire [SIZE_wire-1:0] C;
+wire [SIZE_out+SIZE_wire-1:0] C;
 wire [SIZE-1:0] A1;
 localparam mod = SIZE % 2; //Para saber si es par o impar el número de entradas
 
@@ -37,17 +37,17 @@ if(mod) begin //IMPAR ==> BASE_NAND
     genvar e;
     for(e=1;e<SIZE;e=e+1) begin
         if(e==1)begin
-            Base_NAND inst_base_nand(.A(),.Q());
+            Base_NAND inst_base_nand(.A(A1[1:0]),.Q(C[3:0]));
         end
         else begin
             if(e%2) begin //IMPAR ==> NNANDS / NANDS
                 genvar a;
                 for(a=1;a <= 2**(e-1);a=a+1) begin
                     if(a <= (2**(e-1))/2)begin //NNANDS
-                        NNANDS inst_nnands(.A(),.B(),.Q());
+                        NNANDS inst_nnands(.A(A1[e]),.B(C[((2**e)-1)+(a-1)*4:((2**e)-1)+(a-1)*4-3]),.Q(C[((2**(e+1))-1)+(a-1)*4:((2**(e+1))-1)+(a-1)*4-3]));
                     end
                     else begin //NANDS
-                        NANDS inst_nands(.A(),.B(),.Q());
+                        NANDS inst_nands(.A(A1[e]),.B(C[((2**e)-1)+((a-(2**(e-1))/2)-1)*4:((2**e)-1)+((a-(2**(e-1))/2)-1)*4-3]),.Q(C[((2**(e+1))-1)+(a-1)*4:((2**(e+1))-1)+(a-1)*4-3]));
                     end
                 end
             end
@@ -55,31 +55,32 @@ if(mod) begin //IMPAR ==> BASE_NAND
                 genvar b;
                 for(b=1;b <= 2**(e-1);b=b+1) begin
                     if(b <= (2**(e-1))/2)begin //NORS
-                        NORS inst_nors(.A(),.B(),.Q());
+                        NORS inst_nors(.A(A1[e]),.B(C[((2**e)-1)+(b-1)*4:((2**e)-1)+(b-1)*4-3]),.Q(C[((2**(e+1))-1)+(b-1)*4:((2**(e+1))-1)+(b-1)*4-3]));
                     end
                     else begin //NNORS
-                        NNORS inst_nnors(.A(),.B(),.Q());
+                        NNORS inst_nnors(.A(A1[e]),.B(C[((2**e)-1)+((b-(2**(e-1))/2)-1)*4:((2**e)-1)+((b-(2**(e-1))/2)-1)*4-3]),.Q(C[((2**(e+1))-1)+(b-1)*4:((2**(e+1))-1)+(b-1)*4-3]));
                     end
                 end
             end
         end
     end
 end
+////////////////////////////////////////////////////////////////////////////////////
 else begin //PAR ==> BASE_NOR
     genvar e;
     for(e=1;e<SIZE;e=e+1) begin
         if(e==1)begin
-            Base_NOR inst_base_nor(.A(),.Q());
+            Base_NOR inst_base_nor(.A(A1[1:0]),.Q(C[3:0]));
         end
         else begin
             if(e%2) begin //IMPAR ==> NORS / NNORS
                 genvar a;
                 for(a=1;a <= 2**(e-1);a=a+1) begin
                     if(a <= (2**(e-1))/2)begin //NORS
-                        NORS inst_nors(.A(),.B(),.Q());
+                        NORS inst_nors(.A(A1[e]),.B(C[((2**e)-1)+(a-1)*4:((2**e)-1)+(a-1)*4-3]),.Q(C[((2**(e+1))-1)+(a-1)*4:((2**(e+1))-1)+(a-1)*4-3]));
                     end
                     else begin //NNORS
-                        NNORS inst_nnors(.A(),.B(),.Q());
+                        NNORS inst_nnors(.A(A1[e]),.B(C[((2**e)-1)+((a-(2**(e-1))/2)-1)*4:((2**e)-1)+((a-(2**(e-1))/2)-1)*4-3]),.Q(C[((2**(e+1))-1)+(a-1)*4:((2**(e+1))-1)+(a-1)*4-3]));
                     end
                 end
             end
@@ -87,15 +88,18 @@ else begin //PAR ==> BASE_NOR
                 genvar b;
                 for(b=1;b <= 2**(e-1);b=b+1) begin
                     if(b <= (2**(e-1))/2)begin //NNANDS
-                        NNANDS inst_nnands(.A(),.B(),.Q());
+                        NNANDS inst_nnands(.A(A1[e]),.B(C[((2**e)-1)+(b-1)*4:((2**e)-1)+(b-1)*4-3]),.Q(C[((2**(e+1))-1)+(b-1)*4:((2**(e+1))-1)+(b-1)*4-3]));
                     end
                     else begin //NANDS
-                        NANDS inst_nands(.A(),.B(),.Q());
+                        NANDS inst_nands(.A(A1[e]),.B(C[((2**e)-1)+((b-(2**(e-1))/2)-1)*4:((2**e)-1)+((b-(2**(e-1))/2)-1)*4-3]),.Q(C[((2**(e+1))-1)+(b-1)*4:((2**(e+1))-1)+(b-1)*4-3]));
                     end
                 end
             end
         end
     end
+end
+always @(*) begin
+    Y[SIZE_out-1:0] <= C[SIZE_out+SIZE_wire-1:SIZE_wire];
 end
 endmodule
 
