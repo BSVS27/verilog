@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 03/18/2019 01:21:49 AM
+// Create Date: 03/23/2019 04:34:03 PM
 // Design Name: 
-// Module Name: FF
+// Module Name: INV
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,12 +20,11 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module FF (CLK,A,Y);
-input wire CLK;
+module INV(A,Q);
 input wire A;
-output reg Y;
+output reg Q;
 
-always @(posedge CLK) begin
-    Y <= A;
-end
+always @(*)begin
+    Q <= ~A;
+end    
 endmodule

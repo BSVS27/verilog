@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 03/18/2019 01:21:49 AM
+// Create Date: 03/23/2019 04:33:39 PM
 // Design Name: 
-// Module Name: FF
+// Module Name: NAND
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,12 +20,10 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module FF (CLK,A,Y);
-input wire CLK;
-input wire A;
-output reg Y;
+module NAND(A,B,Q);
+input wire A,B;
+output wire Q;
 
-always @(posedge CLK) begin
-    Y <= A;
-end
+assign Q = !(A & B);
+    
 endmodule

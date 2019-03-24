@@ -20,18 +20,23 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module decoder_top #(parameter SIZE=4)(CLK,A,Y);
+module decoder_top #(parameter SIZE=5)(CLK,A,EN,Y);
 localparam SIZE_out=2**SIZE;
 localparam SIZE_wire=(2**SIZE)-4;
-input wire CLK;
+input wire CLK,EN;
 input wire [SIZE-1:0] A;
-output reg [SIZE_out-1:0] Y;
+output wire [SIZE_out-1:0] Y;
 
 wire [SIZE_out+SIZE_wire-1:0] C;
 wire [SIZE-1:0] A1;
+wire [SIZE_out-1:0] nand_inv;
 localparam mod = SIZE % 2; //Para saber si es par o impar el número de entradas
 
-FF inst_ff(.CLK(CLK),.A(A),.Y(A1));
+//Flip-flop_Entrada
+genvar t;
+for(t=0;t<SIZE;t=t+1)begin
+    FF inst_ff(.CLK(CLK),.A(A[t]),.Y(A1[t]));
+end
 
 if(mod) begin //IMPAR ==> BASE_NAND
     genvar e;
@@ -98,17 +103,10 @@ else begin //PAR ==> BASE_NOR
         end
     end
 end
-always @(*) begin
-    Y[SIZE_out-1:0] <= C[SIZE_out+SIZE_wire-1:SIZE_wire];
+//PARTE DEL ENABLE
+genvar j;
+for(j=0;j<2**SIZE;j=j+1)begin
+    NAND inst_nand(.A(C[SIZE_wire+j]),.B(EN),.Q(nand_inv[j]));
+    INV inst_inv(.A(nand_inv[j]),.Q(Y[j]));
 end
 endmodule
-
-
-
-
-
-
-
-
-
-
