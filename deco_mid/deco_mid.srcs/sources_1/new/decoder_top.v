@@ -20,17 +20,33 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module decoder_top #(parameter SIZE=5)(CLK,A,EN,Y);
-localparam SIZE_out=2**SIZE;
-localparam SIZE_wire=(2**SIZE)-4;
+module decoder_top (CLK,A,EN,Y);
+parameter SIZE=5;
+parameter Cin=13;
+parameter Cout=108;
+
+localparam SIZE_out=2**SIZE; //Número de salidas
+localparam SIZE_wire=(2**SIZE)-4; //Número de cables que ocupo para hacer interconecciones
+localparam mod = SIZE % 2; //Para saber si es par o impar el número de entradas
+localparam N=SIZE+2; //Etapas para dimensionar
+localparam B=2**(N-3); //Esfuerzo de ramificación
+if(mod)begin
+    localparam G=((SIZE+1)/2)*(4/3)+((SIZE-1)/2)*(5/3);
+    localparam F=(G)*(Cout/Cin)*(B);
+end else begin
+    localparam G=(SIZE/2)*((5/3)+(4/3));
+    localparam F=(G)*(Cout/Cin)*(B);
+end
+
 input wire CLK,EN;
 input wire [SIZE-1:0] A;
 output wire [SIZE_out-1:0] Y;
 
-wire [SIZE_out+SIZE_wire-1:0] C;
-wire [SIZE-1:0] A1;
-wire [SIZE_out-1:0] nand_inv;
-localparam mod = SIZE % 2; //Para saber si es par o impar el número de entradas
+wire [SIZE_out+SIZE_wire-1:0] C; //WIRE para hacer las interconecciones
+wire [SIZE-1:0] A1; //Salidas de los FFs iniciales
+wire [SIZE_out-1:0] nand_inv; //Salidas de la NAND al Inversor
+
+
 
 //Flip-flop_Entrada
 genvar t;
@@ -38,7 +54,7 @@ for(t=0;t<SIZE;t=t+1)begin
     FF inst_ff(.CLK(CLK),.A(A[t]),.Y(A1[t]));
 end
 
-if(mod) begin //IMPAR ==> BASE_NAND
+if(mod) begin //IMPAR ==> BASE_NAND;
     genvar e;
     for(e=1;e<SIZE;e=e+1) begin
         if(e==1)begin
