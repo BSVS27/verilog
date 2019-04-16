@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 03/17/2019 06:01:40 PM
+// Create Date: 04/15/2019 10:54:51 PM
 // Design Name: 
-// Module Name: NNANDS
+// Module Name: Enable_2
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -18,20 +18,17 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
+module Enable_2 (A,EN,Y);
+parameter SIZE=0;
+input wire [(2**SIZE)-1:0] A;
+input wire EN;
+output wire [(2**SIZE)-1:0] Y;
 
+wire [(2**SIZE)-1:0] nand_inv; //Salidas de la NAND al Inversor
 
-module NANDS(A,B,Q);
-input wire A;
-input wire [3:0] B;
-output wire [3:0] Q;
-
-assign Q[0] = !(B[0] & A);
-assign Q[1] = !(B[1] & A);
-assign Q[2] = !(B[2] & A);
-assign Q[3] = !(B[3] & A);
-    
+genvar j;
+for(j=0;j<2**SIZE;j=j+1)begin
+    NAND inst_nand(.A(A[j]),.B(EN),.Q(nand_inv[j]));
+    INV inst_inv(.A(nand_inv[j]),.Q(Y[j]));
+end
 endmodule
-
-
-
-

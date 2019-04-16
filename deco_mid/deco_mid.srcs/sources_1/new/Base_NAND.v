@@ -22,14 +22,14 @@
 
 module Base_NAND(A,Q);
 input wire [1:0] A;
-output reg [3:0] Q;
+output wire [3:0] Q;
 
-always @(*) begin
-    Q[0] <= !(!A[1] & !A[0]);
-    Q[1] <= !(!A[1] & A[0]);
-    Q[2] <= !(A[1] & !A[0]);
-    Q[3] <= !(A[1] & A[0]);
-end 
+
+assign Q[0] = !(!A[1] & !A[0]);
+assign Q[1] = !(!A[1] & A[0]);
+assign Q[2] = !(A[1] & !A[0]);
+assign Q[3] = !(A[1] & A[0]);
+
 endmodule
 
 

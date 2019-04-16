@@ -23,12 +23,12 @@
 module NORS(A,B,Q);
 input wire A;
 input wire [3:0] B;
-output reg [3:0] Q;
+output wire [3:0] Q;
 
-always @(*) begin
-    Q[0] <= !(B[0] | A);
-    Q[1] <= !(B[1] | A);
-    Q[2] <= !(B[2] | A);
-    Q[3] <= !(B[3] | A);
-end
+
+assign Q[0] = !(B[0] | A);
+assign Q[1] = !(B[1] | A);
+assign Q[2] = !(B[2] | A);
+assign Q[3] = !(B[3] | A);
+
 endmodule

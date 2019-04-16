@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 03/17/2019 06:01:40 PM
+// Create Date: 04/16/2019 12:15:22 AM
 // Design Name: 
-// Module Name: NNANDS
+// Module Name: FF_top
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,18 +20,14 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module NANDS(A,B,Q);
-input wire A;
-input wire [3:0] B;
-output wire [3:0] Q;
+module FF_top (clk,A,Y);
+parameter SIZE=0;
+input wire clk;
+input wire [SIZE-1:0] A;
+output wire [SIZE-1:0] Y;
 
-assign Q[0] = !(B[0] & A);
-assign Q[1] = !(B[1] & A);
-assign Q[2] = !(B[2] & A);
-assign Q[3] = !(B[3] & A);
-    
+genvar t;
+for(t=0;t<SIZE;t=t+1)begin
+    FF inst_ff(.clk(clk),.A(A[t]),.Y(Y[t]));
+end
 endmodule
-
-
-
-

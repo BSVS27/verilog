@@ -20,12 +20,12 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module FF (CLK,A,Y);
-input wire CLK;
+module FF (clk,A,Y);
+input wire clk;
 input wire A;
 output reg Y;
 
-always @(posedge CLK) begin
+always @(posedge clk) begin
     Y <= A;
 end
 endmodule

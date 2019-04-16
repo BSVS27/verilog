@@ -22,9 +22,8 @@
 
 module INV(A,Q);
 input wire A;
-output reg Q;
+output wire Q;
 
-always @(*)begin
-    Q <= ~A;
-end    
+assign Q = !A;  
+
 endmodule
