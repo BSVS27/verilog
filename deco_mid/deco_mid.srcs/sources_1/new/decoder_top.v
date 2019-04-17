@@ -18,8 +18,6 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-
-
 module decoder_top (A,Y);
 parameter SIZE=0;
 parameter Cin=0;
@@ -28,10 +26,10 @@ parameter N=0;
 parameter B=0;
 parameter F=0;
 parameter G=0;
+parameter mod=0;
 
 localparam SIZE_out=2**SIZE; //Número de salidas
 localparam SIZE_wire=(2**SIZE)-4; //Número de cables que ocupo para hacer interconecciones
-localparam mod = SIZE % 2; //Para saber si es par o impar el número de entradas
 
 input wire [SIZE-1:0] A;
 output wire [SIZE_out-1:0] Y;
