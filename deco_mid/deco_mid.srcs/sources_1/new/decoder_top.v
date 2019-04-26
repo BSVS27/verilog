@@ -20,12 +20,6 @@
 //////////////////////////////////////////////////////////////////////////////////
 module decoder_top (A,Y);
 parameter SIZE=0;
-parameter Cin=0;
-parameter Cout=0;
-parameter N=0;
-parameter B=0;
-parameter F=0;
-parameter G=0;
 parameter mod=0;
 
 localparam SIZE_out=2**SIZE; //Número de salidas
